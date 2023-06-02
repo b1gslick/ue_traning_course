@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright EpAic Games, Inc. All Rights Reserved.
 
 #pragma once
 
@@ -7,11 +7,13 @@
 #include "geometryBaseGameModeBase.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class GEOMETRYBASE_API AgeometryBaseGameModeBase : public AGameModeBase
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+
+public:
+    AgeometryBaseGameModeBase();
 };

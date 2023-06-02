@@ -1,0 +1,1 @@
+java -jar agent.jar -jnlpUrl http://localhost:8080/manage/computer/ForDevOps/jenkins-agent.jnlp -secret 243c2e3546efd1d0c8284ffee1ff3faea5d9877c697cce068a5d4c1f721d4815 -workDir "C:\Jenkins"

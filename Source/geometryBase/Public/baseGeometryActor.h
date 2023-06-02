@@ -7,6 +7,38 @@
 #include "Components/StaticMeshComponent.h"
 #include "baseGeometryActor.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnColorChanged, const FLinearColor&, Color, const FString&, Name);
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnTimerFinished, AActor*);
+
+UENUM(BlueprintType)
+enum class EMovementType : uint8
+{
+    Sin,
+    Static
+};
+
+USTRUCT(BlueprintType)
+struct FGeometryData
+{
+    GENERATED_USTRUCT_BODY()
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+    float Amplitude = 50.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+    float Frequency = 2.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+    EMovementType MoveType = EMovementType::Static;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Design")
+    FLinearColor Color = FLinearColor::Black;
+
+    UPROPERTY(EditAnywhere, Category = "Design")
+    float TimerRate = 3.0f;
+};
+
 UCLASS()
 class GEOMETRYBASE_API AbaseGeometryActor : public AActor
 {
@@ -19,9 +51,22 @@ public:
     UPROPERTY(VisibleAnywhere)
     UStaticMeshComponent* BaseMesh;
 
+    void SetGeometryData(const FGeometryData& Data) { GeometryData = Data; }
+
+    UFUNCTION(BlueprintCallable)
+    FGeometryData GetGeometryData() const { return GeometryData; }
+
+    UPROPERTY(BlueprintAssignable)
+    FOnColorChanged OnColorChanged;
+
+    FOnTimerFinished OnTimerFinished;
+
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GeometryData")
+    FGeometryData GeometryData;
 
     UPROPERTY(EditAnywhere, Category = "Weapon")
     int32 WeaponNum = 4;
@@ -38,11 +83,25 @@ protected:
     UPROPERTY(VisibleAnywhere, Category = "Weapon")
     bool HasWeapon = true;
 
+    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
 
 private:
+    FVector InitialLocation;
+    FTimerHandle TimerHandle;
+
+    const int32 MaxTimerCount = 5;
+    int TimerCount = 0;
+
+    void HandleMovement();
+
     void printTypes();
     void printStringTypes();
+    void printTransform();
+    void SetColor(const FLinearColor& Color);
+
+    void OnTimerFired();
 };
