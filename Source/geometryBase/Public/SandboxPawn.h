@@ -7,6 +7,7 @@
 #include "SandboxPawn.generated.h"
 
 class UCameraComponent;
+class UStaticMeshComponent;
 
 UCLASS()
 class GEOMETRYBASE_API ASandboxPawn : public APawn
